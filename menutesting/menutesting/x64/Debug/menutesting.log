@@ -1,4 +1,4 @@
 ﻿  menutesting.cpp
-D:\menutesting\menutesting\menutesting.cpp(755,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
-D:\menutesting\menutesting\menutesting.cpp(34): warning C4715: 'key': not all control paths return a value
-  menutesting.vcxproj -> D:\menutesting\x64\Debug\menutesting.exe
+C:\Users\ASUS\Documents\GitHub\-KTLT-_TEAM09\menutesting\menutesting\menutesting.cpp(755,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+C:\Users\ASUS\Documents\GitHub\-KTLT-_TEAM09\menutesting\menutesting\menutesting.cpp(34): warning C4715: 'key': not all control paths return a value
+  menutesting.vcxproj -> C:\Users\ASUS\Documents\GitHub\-KTLT-_TEAM09\menutesting\x64\Debug\menutesting.exe

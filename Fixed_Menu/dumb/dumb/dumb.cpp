@@ -682,17 +682,226 @@ void drawO() {
 	TextColor(240);
 }
 
+void drawV() {
+
+
+	GotoXY(69, 20);
+	TextColor(85);
+	cout << "######";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 21);
+	cout << "##";
+	TextColor(221);
+	cout << "######";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 22);
+	TextColor(85);
+	cout << "##";
+	TextColor(221);
+	cout << "########";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 23);
+	TextColor(85);
+	cout << "##";
+	TextColor(221);
+	cout << "##########";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 24);
+	TextColor(85);
+	cout << "##";
+	TextColor(221);
+	cout << "############";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 25);
+	TextColor(85);
+	cout << "##";
+	TextColor(221);
+	cout << "##########";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 26);
+	TextColor(85);
+	cout << "##";
+	TextColor(221);
+	cout << "########";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 27);
+	cout << "##";
+	TextColor(221);
+	cout << "######";
+	TextColor(85);
+	cout << "##" << endl;
+
+	GotoXY(69, 28);
+	TextColor(85);
+	cout << "######";
+	TextColor(85);
+	cout << "##" << endl;
+
+	TextColor(240);
+}
+
+void drawPlay() {
+	//1
+	GotoXY(13, 0);
+	TextColor(0);
+	cout << "######";
+	TextColor(255);
+	cout << "    ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "            ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "      ";
+	TextColor(0);
+	cout << "##" << endl;
+
+	//2
+	GotoXY(13, 1);
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "    ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "          ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  " << endl;
+
+	//3
+	GotoXY(13, 2);
+	TextColor(0);
+	cout << "######";
+	TextColor(255);
+	cout << "    ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "##" << endl;
+
+	//4
+	GotoXY(13, 3);
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "####";
+	TextColor(255);
+	cout << "  ";
+	TextColor(0);
+	cout << "####";
+	TextColor(255);
+	cout << "      ";
+	TextColor(0);
+	cout << "##" << endl;
+
+	//5 
+	GotoXY(13, 4);
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "        ";
+	TextColor(0);
+	cout << "######";
+	TextColor(255);
+	cout << "    ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "      ";
+	TextColor(0);
+	cout << "##";
+	TextColor(255);
+	cout << "    ";
+	TextColor(0);
+	cout << "##";
+
+	TextColor(240);
+}
+
 
 void StartGame() {
 	system("cls");
 	ResetData(); // Khởi tạo dữ liệu gốc
 	TextColor(240);
 	DrawBoard(_BOARD_SIZE); // Vẽ màn hình game
+	drawPlay();
 	drawGameTable(20, 13, 65, 5);
 	drawX();
 	drawGameTable(20, 13, 90, 5);
 	drawO();
 	drawGameTable(45, 10, 65, 19);
+	drawV();
+	TextColor(15);
+	GotoXY(85, 20); cout << "     HOW TO PLAY :    ";
+	TextColor(240);
+	GotoXY(90, 21); cout << "R : UNDO ";
+	GotoXY(90, 22); cout << "Y : SAVE  ";
+	GotoXY(90, 23); cout << "W : UP ";
+	GotoXY(90, 24); cout << "A : LEFT ";
+	GotoXY(90, 25); cout << "S : DOWN";
+	GotoXY(90, 26); cout << "D : RIGHT";
+	GotoXY(90, 27); cout << "ESC : EXIT  ";
+	GotoXY(90, 28); cout << "ENTER : CHOOSE ";
+
 	TextColor(240);
 	GotoXY(_X, _Y);
 	cout << "x";
@@ -921,6 +1130,7 @@ public:
 void saveGame() {
 	char name[30];
 	GotoXY(50, 15);
+	TextColor(240);
 	printf("Your name: ");
 	gets_s(name);
 	char fileName[40] = ".txt";
@@ -1020,7 +1230,7 @@ void playAfterLoad() {
 	GotoXY(_X, _Y);
 	while (1)
 	{
-		if (_kbhit()) {
+		//if (_kbhit()) {
 			waitKeyBoard();
 			if (_COMMAND == 27) // Nhập phím "ESC" 
 			{
@@ -1064,7 +1274,7 @@ void playAfterLoad() {
 					}
 					validEnter = true; // Mở khóa
 				}
-			}
+			//}
 		}
 	}
 }
@@ -5055,66 +5265,64 @@ void multiplay() {
 	int temp_time = 0;
 	while (1)
 	{
-		clock_t end = clock();
+		//clock_t end = clock();
+		//if (((end - start) / 1000) != temp_time)
+		//{
+		//	GotoXY(0, 0);
+		//	printf("                                                     ");// Xóa thời gian trước đó rồi mới in
+		//	GotoXY(0, 0);
+		//	TextColor(240);
+		//	printf("%i:%i", ((end - start)) / 1000 / 60, ((end - start) / 1000) % 60);
+		//	GotoXY(_X, _Y);
+		//}
+		//temp_time = (end - start) / 1000;
 
-		if (((end - start) / 1000) != temp_time)
+		waitKeyBoard();
+		if (_COMMAND == 27) // Nhập phím "ESC" 
 		{
-			GotoXY(0, 0);
-			printf("                                                     ");// Xóa thời gian trước đó rồi mới in
-			GotoXY(0, 0);
-			printf("%i:%i", ((end - start)) / 1000 / 60, ((end - start) / 1000) % 60);
-			GotoXY(_X, _Y);
+			ExitGame();
+			break;
 		}
-		temp_time = (end - start) / 1000;
-		if (_kbhit()) {
-			waitKeyBoard();
-			if (_COMMAND == 27) // Nhập phím "ESC" 
-			{
+		if (_COMMAND == 'Y') // Nhập Y để lưu 
+		{
+			saveGame();
+			ExitGame();
+			break;
+		}
 
-				if (askSave() == 'Y') // Nhập Y để lưu 
-				{
-					saveGame();
-					ExitGame();
+		else {
+			if (_COMMAND == 'A' || _COMMAND == 75) MoveLeft();
+			else if (_COMMAND == 'W' || _COMMAND == 72) MoveUp();
+			else if (_COMMAND == 'S' || _COMMAND == 80) MoveDown();
+			else if (_COMMAND == 'D' || _COMMAND == 77) MoveRight();
+			else if (_COMMAND == 'R') TakeBack();
+			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
+				redToWhite();
+				switch (CheckBoard(_X, _Y)) {
+				case -1:
+					TextColor(180);
+					printf("X");
+					TextColor(240);
 					break;
+				case 1:
+					TextColor(177);
+					printf("O");
+					TextColor(240);
+					break;
+				case 0: validEnter = false; break; // Khi đánh vào ô đã đánh rồi
 				}
-				else ExitGame();
-				break;
-			}
-
-			else {
-				if (_COMMAND == 'A' || _COMMAND == 75) MoveLeft();
-				else if (_COMMAND == 'W' || _COMMAND == 72) MoveUp();
-				else if (_COMMAND == 'S' || _COMMAND == 80) MoveDown();
-				else if (_COMMAND == 'D' || _COMMAND == 77) MoveRight();
-				else if (_COMMAND == 'R') TakeBack();
-				else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
-					redToWhite();
-					switch (CheckBoard(_X, _Y)) {
-					case -1:
-						TextColor(180);
-						printf("X");
-						TextColor(240);
-						break;
-					case 1:
-						TextColor(177);
-						printf("O");
-						TextColor(240);
-						break;
-					case 0: validEnter = false; break; // Khi đánh vào ô đã đánh rồi
-					}
-					// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
-					if (validEnter == true) {
-						TextColor(7);
-						switch (ProcessFinish(TestBoard())) {
-						case -1: case 1: case 0:
-							if (AskContinue() != 'Y') {
-								ExitGame(); return;
-							}
-							else StartGame();
+				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
+				if (validEnter == true) {
+					TextColor(7);
+					switch (ProcessFinish(TestBoard())) {
+					case -1: case 1: case 0:
+						if (AskContinue() != 'Y') {
+							ExitGame(); return;
 						}
+						else StartGame();
 					}
-					validEnter = true; // Mở khóa
 				}
+				validEnter = true; // Mở khóa
 			}
 		}
 	}
@@ -5198,13 +5406,13 @@ void main()
 			}
 			if (line == 17) {
 				system("cls");
-				HELPS(s);
+				CREDITS(s);
 				system("cls");
 				menu.printMenu();
 			}
 			if (line == 18) {
 				system("cls");
-				CREDITS(s);
+				HELPS(s);
 				system("cls");
 				menu.printMenu();
 			}

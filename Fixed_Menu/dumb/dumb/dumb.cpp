@@ -34,6 +34,7 @@ int _loop;
 int _count; //Đếm số nước đã đi để tính hòa
 HANDLE hConsoleColor;
 clock_t start;
+FILE* ffile;
 
 void sleep(clock_t wait)
 {
@@ -351,12 +352,13 @@ void winLine_off()
 
 void winLineBlink()
 {
-	while (1) {
+	int i = 0;
+	while (i < 10) {
 		winLine_on();
 		sleep(100);
 		winLine_off();
 		sleep(100);
-		if (_kbhit()) break;
+		i++;
 	}
 }
 
@@ -878,12 +880,18 @@ void drawPlay() {
 }
 
 
-void StartGame() {
+void StartGame() { // đã sửa
 	system("cls");
 	ResetData(); // Khởi tạo dữ liệu gốc
 	TextColor(240);
 	DrawBoard(_BOARD_SIZE); // Vẽ màn hình game
-	drawPlay();
+	//drawPlay();
+	GotoXY(68, 4);
+	TextColor(15);
+	cout << "   1P's INFO    " << endl;
+	GotoXY(93, 4);
+	cout << "   2P's INFO    ";
+	TextColor(240);
 	drawGameTable(20, 13, 65, 5);
 	drawX();
 	drawGameTable(20, 13, 90, 5);
@@ -906,7 +914,7 @@ void StartGame() {
 	GotoXY(_X, _Y);
 	cout << "x";
 	GotoXY(_X, _Y);
-}
+} 
 
 //Hàm dọn dẹp tài nguyên (hàm nhóm Model)
 void GabageCollect()
@@ -942,9 +950,10 @@ int ProcessFinish(int pWhoWin) {
 	GotoXY(_X, _Y); // Trả về vị trí hiện hành của con trỏ màn hình bàn cờ
 	return pWhoWin;
 }
-int AskContinue() {
-	GotoXY(0, _A[_BOARD_SIZE - 1][_BOARD_SIZE - 1].y + 4);
-	printf("Nhan 'y/n' de tiep tuc/dung: ");
+int AskContinue() { // đã sửa
+	TextColor(224);
+	GotoXY(8 ,4); printf("Nhan 'Y' de tiep tuc hoac bat ki nut nao khac de stop ! ");
+	TextColor(240);
 	return toupper(_getch());
 }
 int CheckBoard(int pX, int pY) {
@@ -1080,6 +1089,29 @@ void MoveUp() {
 
 }
 
+void redToWhite()//-1:244   1"241
+{
+
+	for (int i = 0; i < _BOARD_SIZE; i++)
+		for (int j = 0; j < _BOARD_SIZE; j++)
+			if (_A[i][j].x == LastMove.x && _A[i][j].y == LastMove.y)
+			{
+				GotoXY(LastMove.x, LastMove.y);
+				if (_A[i][j].c == -1)
+				{
+					TextColor(244);
+					printf("X");
+				}
+				else if (_A[i][j].c == 1)
+				{
+					TextColor(241);
+					printf("O");
+				}
+				TextColor(240);
+				GotoXY(_X, _Y);
+			}
+}
+
 
 int TestBoard()
 {
@@ -1126,8 +1158,16 @@ public:
 	}
 };
 
+void saveNameOfFile(char name[]) { // mới vừa thêm
+	ffile = fopen("filename.txt", "a");
+	if (ffile == NULL) {
+		return;
+	}
+	fprintf(ffile, "%s\n", name);
+	fclose(ffile);
+}
 
-void saveGame() {
+void saveGame() {  // đã thêm
 	char name[30];
 	GotoXY(50, 15);
 	TextColor(240);
@@ -1135,6 +1175,7 @@ void saveGame() {
 	gets_s(name);
 	char fileName[40] = ".txt";
 	strcat(name, fileName);
+	saveNameOfFile(name); // thêm ở đây
 	FILE* f = fopen(name, "w");
 	fprintf(f, "%d\n", _TURN);
 	for (int i = 0; i < _BOARD_SIZE; i++) {
@@ -1148,22 +1189,117 @@ void saveGame() {
 
 }
 
-int loadGame() {
+void multiplay() { // đã sửa
+	GotoXY(_X, _Y);
+	_count = 0;
+	LastMove = _A[0][0];
+	bool validEnter = true;
+	start = clock();
+	int temp_time = 0;
+	while (1)
+	{
+		//clock_t end = clock();
+		//if (((end - start) / 1000) != temp_time)
+		//{
+		//	GotoXY(0, 0);
+		//	printf("                                                     ");// Xóa thời gian trước đó rồi mới in
+		//	GotoXY(0, 0);
+		//	TextColor(240);
+		//	printf("%i:%i", ((end - start)) / 1000 / 60, ((end - start) / 1000) % 60);
+		//	GotoXY(_X, _Y);
+		//}
+		//temp_time = (end - start) / 1000;
+
+		waitKeyBoard();
+		if (_COMMAND == 27) // Nhập phím "ESC" 
+		{
+			ExitGame();
+			break;
+		}
+		if (_COMMAND == 'Y') // Nhập Y để lưu 
+		{
+			saveGame();
+			ExitGame();
+			break;
+		}
+
+		else {
+			if (_COMMAND == 'A' || _COMMAND == 75) MoveLeft();
+			else if (_COMMAND == 'W' || _COMMAND == 72) MoveUp();
+			else if (_COMMAND == 'S' || _COMMAND == 80) MoveDown();
+			else if (_COMMAND == 'D' || _COMMAND == 77) MoveRight();
+			else if (_COMMAND == 'R') TakeBack();
+			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
+				redToWhite();
+				switch (CheckBoard(_X, _Y)) {
+				case -1:
+					TextColor(180);
+					printf("X");
+					TextColor(240);
+					break;
+				case 1:
+					TextColor(177);
+					printf("O");
+					TextColor(240);
+					break;
+				case 0: validEnter = false; break; // Khi đánh vào ô đã đánh rồi
+				}
+				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
+				if (validEnter == true) {
+					TextColor(7);
+					switch (ProcessFinish(TestBoard())) {
+					case -1: case 1: case 0:
+						if (AskContinue() != 'Y') {
+							ExitGame(); return;
+						}
+						else StartGame();
+					}
+				}
+				validEnter = true; // Mở khóa
+			}
+		}
+	}
+}
+
+void printFileName() { // mới vừa thêm
+	ffile = fopen("filename.txt", "r");
+	char name[100];
+	char temp[100][100];
+	int count = 0;
+	while (!feof(ffile)) {
+		fgets(name, 100, ffile);
+		strcpy(temp[count], name);
+		count++;
+	}
+	count--;
+	fclose(ffile);
+	int start = (count >= 5) ? (count - 5) : 0;  // xác định vị trí bắt đầu in
+	int pos = 10;
+	for (int i = start; i < count; i++) {
+		GotoXY(52, pos);
+		printf("%s", temp[i]);
+		pos++;
+	}
+}
+
+int loadGame() { 
 	vector<int> data;
 	char name[30];
 	TextColor(240);
-	GotoXY(50, 0);
+	printFileName();
+	GotoXY(40, 0);
 	cout << "Your name: ";
 	gets_s(name);
+	GotoXY(65, 0); cout << ".txt";
 	char fileName[10] = ".txt";
 	strcat(name, fileName);
-	cout << name << endl;
+	//cout << name << endl;
 	system("cls");
 	FILE* f = fopen(name, "rb");
 	if (f == NULL) {
 		GotoXY(30, 10);
-		cout << "Khong tim thay ten nguoi choi !";
-		Sleep(2000);
+		cout << "Khong tim thay ten nguoi choi ! Vui long doi 1 chut";
+		Sleep(1000);
 		return 0;
 		system("cls");
 		//play();
@@ -1190,94 +1326,22 @@ int loadGame() {
 			if (data[getdata] == -1) {
 				TextColor(244);
 				cout << "X";
-
-				////countX++;
-				////GotoXY(7, 3);
-				////cout << countX;
-				//GotoXY(71, 3);
-				//cout << "O";
-				//_b->setCheckAt(i, j, data[getdata]);
 			}
 			if (data[getdata] == 1) {
 				TextColor(241);
 				cout << "O";
-				////countO++;
-				////GotoXY(15, 3);
-				////cout << countO;
-				//GotoXY(71, 3);
-				//cout << "X";
-				//_b->setCheckAt(i, j, data[getdata]);
 			}
 			getdata++;
 		}
-	}
-	/*_X = _b->getXAt(0, 0);
-	_Y = _b->getYAt(0, 0);
-	GotoXY(_X, _Y);*/
-	// bí ẩn đừng thêm vào 
-	//fclose(f);
+	} 
+	fclose(f);
 	return 1;
 }
 
 void playAfterLoad() {
 	if (loadGame() == 0) return;
-	bool validEnter = true;
-	GotoXY(68, 4);
-	TextColor(15);
-	cout << "   1P's INFO    " << endl;
-	GotoXY(93, 4);
-	cout << "   2P's INFO    ";
-	GotoXY(_X, _Y);
-	while (1)
-	{
-		//if (_kbhit()) {
-			waitKeyBoard();
-			if (_COMMAND == 27) // Nhập phím "ESC" 
-			{
-
-				if (askSave() == 'Y') // Nhập Y để lưu 
-				{
-					saveGame();
-					ExitGame();
-					break;
-				}
-				else ExitGame();
-				break;
-			}
-
-			else {
-				if (_COMMAND == 'A' || _COMMAND == 75) MoveLeft();
-				else if (_COMMAND == 'W' || _COMMAND == 72) MoveUp();
-				else if (_COMMAND == 'S' || _COMMAND == 80) MoveDown();
-				else if (_COMMAND == 'D' || _COMMAND == 77) MoveRight();
-				else if (_COMMAND == 'R') TakeBack();
-				else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
-					switch (CheckBoard(_X, _Y)) {
-					case -1:
-						TextColor(244);
-						printf("X"); break;
-					case 1:
-						TextColor(241);
-						printf("O"); break;
-					case 0: validEnter = false; break; // Khi đánh vào ô đã đánh rồi
-					}
-					// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
-					if (validEnter == true) {
-						TextColor(7);
-						switch (ProcessFinish(TestBoard())) {
-						case -1: case 1: case 0:
-							if (AskContinue() != 'Y') {
-								ExitGame(); return;
-							}
-							else StartGame();
-						}
-					}
-					validEnter = true; // Mở khóa
-				}
-			//}
-		}
-	}
-}
+	multiplay();
+} // đã sửa
 
 
 void gotoxy(int column, int line)
@@ -5105,7 +5169,6 @@ void Settings::printMenu() {
 	cout << item[2] << endl;
 	Sleep(10);
 }
-
 void SETTINGS(int& m, int& s) {
 	Settings set;
 	int x_SET;
@@ -5185,29 +5248,6 @@ void SETTINGS(int& m, int& s) {
 	}
 }
 
-void redToWhite()//-1:244   1"241
-{
-
-	for (int i = 0; i < _BOARD_SIZE; i++)
-		for (int j = 0; j < _BOARD_SIZE; j++)
-			if (_A[i][j].x == LastMove.x && _A[i][j].y == LastMove.y)
-			{
-				GotoXY(LastMove.x, LastMove.y);
-				if (_A[i][j].c == -1)
-				{
-					TextColor(244);
-					printf("X");
-				}
-				else if (_A[i][j].c == 1)
-				{
-					TextColor(241);
-					printf("O");
-				}
-				TextColor(240);
-				GotoXY(_X, _Y);
-			}
-}
-
 void CREDITS(int s) {
 	int x_CRE;
 	bool BACK_CRE = false;
@@ -5250,84 +5290,6 @@ void HELPS(int s) {
 	}
 }
 
-void multiplay() {
-	StartGame();
-	GotoXY(68, 4);
-	TextColor(15);
-	cout << "   1P's INFO    " << endl;
-	GotoXY(93, 4);
-	cout << "   2P's INFO    ";
-	GotoXY(_X, _Y);
-	_count = 0;
-	LastMove = _A[0][0];
-	bool validEnter = true;
-	start = clock();
-	int temp_time = 0;
-	while (1)
-	{
-		//clock_t end = clock();
-		//if (((end - start) / 1000) != temp_time)
-		//{
-		//	GotoXY(0, 0);
-		//	printf("                                                     ");// Xóa thời gian trước đó rồi mới in
-		//	GotoXY(0, 0);
-		//	TextColor(240);
-		//	printf("%i:%i", ((end - start)) / 1000 / 60, ((end - start) / 1000) % 60);
-		//	GotoXY(_X, _Y);
-		//}
-		//temp_time = (end - start) / 1000;
-
-		waitKeyBoard();
-		if (_COMMAND == 27) // Nhập phím "ESC" 
-		{
-			ExitGame();
-			break;
-		}
-		if (_COMMAND == 'Y') // Nhập Y để lưu 
-		{
-			saveGame();
-			ExitGame();
-			break;
-		}
-
-		else {
-			if (_COMMAND == 'A' || _COMMAND == 75) MoveLeft();
-			else if (_COMMAND == 'W' || _COMMAND == 72) MoveUp();
-			else if (_COMMAND == 'S' || _COMMAND == 80) MoveDown();
-			else if (_COMMAND == 'D' || _COMMAND == 77) MoveRight();
-			else if (_COMMAND == 'R') TakeBack();
-			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
-				redToWhite();
-				switch (CheckBoard(_X, _Y)) {
-				case -1:
-					TextColor(180);
-					printf("X");
-					TextColor(240);
-					break;
-				case 1:
-					TextColor(177);
-					printf("O");
-					TextColor(240);
-					break;
-				case 0: validEnter = false; break; // Khi đánh vào ô đã đánh rồi
-				}
-				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
-				if (validEnter == true) {
-					TextColor(7);
-					switch (ProcessFinish(TestBoard())) {
-					case -1: case 1: case 0:
-						if (AskContinue() != 'Y') {
-							ExitGame(); return;
-						}
-						else StartGame();
-					}
-				}
-				validEnter = true; // Mở khóa
-			}
-		}
-	}
-}
-
 
 void main()
 {
@@ -5345,7 +5307,7 @@ void main()
 	int line = 14; //Vị trí dòng của menu
 	bool EXIT = false;
 	menu.printMenu();
-	Sleep(3000);
+	Sleep(300);
 	SetConsoleTextAttribute(hConsoleColor, 240);
 	gotoxy(53, line);
 	cout << ">";
@@ -5387,6 +5349,7 @@ void main()
 				NewGame(pmode, m, s);
 				if (pmode == 6);
 				if (pmode == 11) {
+					StartGame();
 					multiplay();
 				}
 				system("cls");
@@ -5433,5 +5396,4 @@ void main()
 	cout << "GOODBYE!";
 	gotoxy(0, 0);
 	TextColor(255);
-
 }

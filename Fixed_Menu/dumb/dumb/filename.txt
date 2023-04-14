@@ -1,0 +1,7 @@
+x.txt
+z.txt
+c.txt
+o.txt
+w.txt
+thang.txt
+test.txt
